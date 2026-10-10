@@ -1,0 +1,1 @@
+{"name":"belin-netlify","version":"2.0.0","private":true,"type":"module","scripts":{"dev":"netlify dev","check":"node --check netlify/functions/api.mjs && node --check public/app.js && node --check public/admin.js"},"dependencies":{"@supabase/supabase-js":"^2.49.0"},"devDependencies":{"netlify-cli":"^23.0.0"},"engines":{"node":">=20"}}
