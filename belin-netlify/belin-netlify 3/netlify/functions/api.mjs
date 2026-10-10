@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 
@@ -477,9 +476,13 @@ export const handler = async (event) => {
         } else {
           allowed = [
             'title',
+            'category',
             'description',
             'price',
-            'icon',
+            'price_note',
+            'image',
+            'features',
+            'button_text',
             'sort',
             'published',
           ];
@@ -497,6 +500,10 @@ export const handler = async (event) => {
                   body[key] === 1 ||
                   body[key] === '1' ||
                   body[key] === 'true';
+              } else if (key === 'features') {
+                const raw = body[key];
+                value = Array.isArray(raw) ? raw : String(raw ?? '').split('\n');
+                value = value.map(x => text(x, 500)).filter(Boolean).slice(0, 30);
               } else if (key === 'sort') {
                 value = Number(body[key]) || 0;
               } else {
