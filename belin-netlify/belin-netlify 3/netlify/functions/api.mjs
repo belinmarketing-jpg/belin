@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 
@@ -75,7 +76,7 @@ const select = async (db, table, publishedOnly = false) => {
     query = query.eq('published', true);
   }
 
-  if (table === 'projects' || table === 'services') {
+  if (table === 'projects' || table === 'services' || table === 'templates') {
     query = query.order('sort').order('id');
   } else {
     query = query.order('id', { ascending: false });
@@ -123,11 +124,13 @@ export const handler = async (event) => {
         projects,
         testimonials,
         services,
+        templates,
       ] = await Promise.all([
         db.from('site_settings').select('key,value'),
         select(db, 'projects', true),
         select(db, 'testimonials', true),
         select(db, 'services', true),
+        select(db, 'templates', true),
       ]);
 
       if (settingsResult.error) {
@@ -148,6 +151,7 @@ export const handler = async (event) => {
         projects,
         testimonials,
         services,
+        templates,
       });
     }
 
@@ -300,12 +304,14 @@ export const handler = async (event) => {
         projects,
         testimonials,
         services,
+        templates,
         settingsResult,
       ] = await Promise.all([
         select(db, 'leads'),
         select(db, 'projects'),
         select(db, 'testimonials'),
         select(db, 'services'),
+        select(db, 'templates'),
         db.from('site_settings').select('key,value'),
       ]);
 
@@ -318,6 +324,7 @@ export const handler = async (event) => {
         projects,
         testimonials,
         services,
+        templates,
         settings: Object.fromEntries(
           (settingsResult.data || []).map((item) => [
             item.key,
@@ -346,6 +353,8 @@ export const handler = async (event) => {
         'priceSite',
         'priceSubscription',
         'footerText',
+        'logoUrl',
+        'logoAlt',
         'formsEnabled',
         'privacyText',
       ];
@@ -427,7 +436,7 @@ export const handler = async (event) => {
     // добавление, редактирование и удаление
 
     const itemMatch = path.match(
-      /^admin\/(projects|testimonials|services)(?:\/(\d+))?$/
+      /^admin\/(projects|testimonials|services|templates)(?:\/(\d+))?$/
     );
 
     if (itemMatch) {
@@ -466,6 +475,8 @@ export const handler = async (event) => {
             'sort',
             'published',
           ];
+        } else if (table === 'templates') {
+          allowed = ['title','category','description','price','image','demo_url','features','sort','published'];
         } else if (table === 'testimonials') {
           allowed = [
             'name',
@@ -549,6 +560,10 @@ export const handler = async (event) => {
           return fail(
             'Ссылка на изображение должна быть HTTPS'
           );
+        }
+
+        if (object.demo_url && !/^https:\/\//.test(object.demo_url)) {
+          return fail('Ссылка демоверсии должна быть HTTPS');
         }
 
         if (
