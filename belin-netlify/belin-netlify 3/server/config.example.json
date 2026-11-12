@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "approved": false,
+  "hostingConfirmed": false,
+  "allowedOrigins": ["https://belin.su", "https://belin-clean-test.netlify.app"],
+  "throttleSalt": "",
+  "maxRecords": 10000,
+  "privacyText": "Заполнить согласованную политику с адресом оператора, реальным российским провайдером, сроками и порядком удаления данных.",
+  "consentText": "Заполнить отдельное согласованное согласие на обработку данных. Не включать форму до проверки размещения и документов."
+}
