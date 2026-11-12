@@ -156,3 +156,57 @@ preserve data and RLS, and review any schema rollback against the backup.
 - Supabase password reset: https://supabase.com/docs/reference/javascript/auth-resetpasswordforemail
 - RLS: https://supabase.com/docs/guides/database/postgres/row-level-security
 - Column grants: https://supabase.com/docs/guides/database/postgres/column-level-security
+
+
+## Applied database hardening — 2026-11-12
+
+The owner subsequently authorized direct database cleanup. The reviewed migration
+was applied through the authenticated Supabase SQL Editor to project
+`wtzihjezhjevezgdipob` (`studio`, organization `belins`). This is a database-only
+change: PR #1 remains unmerged and no Netlify production release was performed.
+Do NOT rerun this initial migration against that existing project: its new tables
+already exist. For new/staging databases use the updated migration normally.
+Schema changes were executed as one transaction, without manually modifying
+Supabase's migration-history tables.
+
+Live inspection found a legacy status constraint (`draft`, `active`, `suspended`)
+and a timestamp/field guard. The migration now preserves those states, adds
+`published`, retains timestamp maintenance, protects all non-content fields for
+browser roles and avoids duplicating existing owner/slug indexes. A redundant
+owner index created during the first pass was removed after verifying it was
+identical to the existing `customer_sites_owner_id_idx`; the original was kept.
+
+Excess TRUNCATE/TRIGGER/REFERENCES grants on `services` and `templates` and broad
+browser grants on `customer_sites` were revoked. RLS does not constrain TRUNCATE,
+so the grants themselves had to be removed. Authenticated customers retain
+SELECT of their own sites and UPDATE(content) only; the legacy frontend's save
+query still works. `customer_leads` and its atomic-throttle function are ready
+for the upcoming server code. Existing studio API access through service_role
+was preserved.
+
+Live verification used the real owner's role and a different synthetic JWT
+subject inside an explicit transaction: own-site SELECT/content UPDATE passed,
+foreign-site access and protected-column modification were blocked, unsafe
+TRUNCATE privileges were absent. All test writes were rolled back. Original
+site fields, content and timestamps were compared before/after and remained
+identical. Counts remained: 1 draft site, 94 services, 0 studio leads, 0 templates;
+new customer leads: 0. Publication remains disabled and the published snapshot
+is NULL. Public /api/public still returned all 94 services with formsEnabled=false.
+Private before/after snapshots were kept outside the repository and are not
+included in this public PR.
+
+Auth was inspected: confirmed email is enabled, anonymous sign-ins disabled,
+secure email change enabled. Secure password change was enabled (requires a
+recent login/reauthentication). Existing Site URL and callback were preserved;
+exact callbacks on the same trusted domain were added:
+`https://belin.su/dashboard/`, `https://belin.su/login/`,
+`https://belin.su/login/reset/`. No wildcard/third-party callbacks were added.
+
+Advisors were reviewed. RLS-without-policy informational notices on studio/server
+and throttle tables are intentional: browser grants are revoked and service_role
+is the only application reader/writer. Do not add permissive policies to silence
+those notices. New-index "unused" notices are expected before traffic.
+Leaked-password protection is unavailable on the current Free plan (Pro+); no
+plan upgrade was made. Custom SMTP is disabled; configuring a mail provider and
+running the email-to-browser recovery acceptance test are still required before
+customer onboarding. No email/password/key rotation or user deletion occurred.

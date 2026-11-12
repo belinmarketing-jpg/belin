@@ -15,11 +15,54 @@ alter table public.customer_sites
   add column if not exists slug text,
   add column if not exists publication_enabled boolean not null default false,
   add column if not exists published_content jsonb,
-  add column if not exists published_at timestamptz;
+  add column if not exists published_at timestamptz,
+  add column if not exists created_at timestamptz not null default now(),
+  add column if not exists updated_at timestamptz not null default now();
 alter table public.customer_sites alter column id set default gen_random_uuid();
-create unique index if not exists customer_sites_public_slug on public.customer_sites(slug);
-create index if not exists customer_sites_owner on public.customer_sites(owner_id);
+-- Preserve legacy active/suspended states while adding the publication state.
+alter table public.customer_sites drop constraint if exists customer_sites_status_check;
+alter table public.customer_sites add constraint customer_sites_status_check
+  check (status in ('draft','active','suspended','published'));
+do $$ begin
+  if not exists (select 1 from pg_index i join pg_attribute a on a.attrelid=i.indrelid and a.attnum=any(i.indkey)
+    where i.indrelid='public.customer_sites'::regclass and i.indisunique and i.indnkeyatts=1 and a.attname='slug') then
+    create unique index customer_sites_public_slug on public.customer_sites(slug);
+  end if;
+end $$;
+do $$ begin
+  if not exists (select 1 from pg_index i join pg_attribute a on a.attrelid=i.indrelid and a.attnum=i.indkey[0]
+    where i.indrelid='public.customer_sites'::regclass and i.indisvalid and i.indpred is null and a.attname='owner_id') then
+    create index customer_sites_owner on public.customer_sites(owner_id);
+  end if;
+end $$;
 alter table public.customer_sites enable row level security;
+
+-- Keep timestamp maintenance and protect every field except the draft payload.
+create or replace function public.customer_sites_guard() returns trigger
+language plpgsql security invoker set search_path = '' as $$
+begin
+  if current_user in ('anon','authenticated') and
+     (to_jsonb(new) - 'content' - 'updated_at') is distinct from
+     (to_jsonb(old) - 'content' - 'updated_at') then
+    raise exception 'Protected site fields cannot be changed by customers';
+  end if;
+  new.updated_at=now();
+  return new;
+end $$;
+revoke all on function public.customer_sites_guard() from public,anon,authenticated;
+drop trigger if exists customer_sites_guard_trigger on public.customer_sites;
+create trigger customer_sites_guard_trigger before update on public.customer_sites
+  for each row execute function public.customer_sites_guard();
+
+-- Remove leftover administrative privileges on the studio catalog; server API
+-- uses service_role. TRUNCATE is not constrained by RLS.
+do $$ declare target text; begin
+  foreach target in array array['services','templates'] loop
+    if to_regclass('public.'||target) is not null then
+      execute format('revoke all on public.%I from public,anon,authenticated',target);
+    end if;
+  end loop;
+end $$;
 
 -- Replace legacy permissive policies and column grants, not just table grants.
 do $$ declare p record; c record; begin

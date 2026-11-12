@@ -28,12 +28,19 @@ test('migration replaces legacy grants; owners can edit drafts but never identit
       alter table public.customer_sites enable row level security;
       create policy legacy_everyone on public.customer_sites for all using(true) with check(true);
       grant all on public.customer_sites to anon,authenticated;
-      grant update(owner_id) on public.customer_sites to authenticated;`);
+      grant update(owner_id) on public.customer_sites to authenticated;
+      alter table public.customer_sites add column slug text unique;
+      create index customer_sites_owner_id_idx on public.customer_sites(owner_id);
+      alter table public.customer_sites add constraint customer_sites_status_check check(status in ('draft','active','suspended'));
+      create table public.services(id bigint);create table public.templates(id bigint);
+      grant all on public.services,public.templates to anon,authenticated;`);
     await db.exec(await readFile(new URL('../supabase/migrations/202611120001_customer_platform.sql',import.meta.url),'utf8'));
     await db.query('insert into auth.users values ($1),($2)',[A,B]);
     await db.query('insert into public.customer_sites(id,owner_id) values ($1,$2),($3,$4)',[SA,A,SB,B]);
     async function as(role,user,sql,params=[]){await db.exec('begin; set local role '+role);try{await db.query("select set_config('request.jwt.claim.sub',$1,true)",[user||'']);const result=await db.query(sql,params);await db.exec('rollback');return result}catch(error){await db.exec('rollback');throw error}}
     assert.equal((await as('authenticated',A,'select id from public.customer_sites')).rows.length,1);
+    const catalogRights=await as('anon',null,"select has_table_privilege(current_user,'public.services','TRUNCATE') as services,has_table_privilege(current_user,'public.templates','TRUNCATE') as templates");
+    assert.equal(catalogRights.rows[0].services,false);assert.equal(catalogRights.rows[0].templates,false);
     assert.equal((await as('authenticated',A,'select id from public.customer_sites where id=$1',[SB])).rows.length,0);
     assert.equal((await as('authenticated',A,"update public.customer_sites set content='{\"headline\":\"Saved\"}' where id=$1 returning id",[SA])).rows.length,1);
     assert.equal((await as('authenticated',A,"update public.customer_sites set content='{}' where id=$1 returning id",[SB])).rows.length,0);
