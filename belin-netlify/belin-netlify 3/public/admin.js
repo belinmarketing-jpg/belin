@@ -79,7 +79,7 @@ function render() {
       field('Telegram (https://t.me/...)','telegram',s.telegram),field('Адрес','address',s.address),
       field('Цена сайта (₽)','priceSite',s.priceSite),field('Цена подписки (₽)','priceSubscription',s.priceSubscription),
       field('Текст подвала','footerText',s.footerText),
-      '<div class="field wide"><span>Текущий логотип BELIN</span><img src="/assets/belin-symbol.svg" width="64" height="72" alt="Логотип BELIN"></div>',field('Включить приём заявок','formsEnabled',s.formsEnabled==='true','checkbox')
+      '<div class="field wide"><span>Текущий логотип BELIN</span><img src="/assets/belin-logo.svg" width="220" height="79" alt="Логотип BELIN"></div>',field('Включить приём заявок','formsEnabled',s.formsEnabled==='true','checkbox')
     ].join('');
     box.innerHTML = `<form class="panel" id="settings-form"><h2>${tab==='privacy'?'Политика обработки данных':'Контент и контакты'}</h2><div class="fields">${fields}</div><button class="btn">Сохранить настройки</button></form>`;
     $('#settings-form').onsubmit = saveSettings;
