@@ -4,7 +4,7 @@ import vm from 'node:vm';
 
 async function files(directory){const entries=await readdir(directory,{withFileTypes:true});return (await Promise.all(entries.map(entry=>entry.isDirectory()?files(directory+'/'+entry.name):directory+'/'+entry.name))).flat()}
 let count=0;
-for(const path of [...await files('public'),...await files('netlify/functions')]){
+for(const path of [...await files('public'),...await files('netlify/functions'),...await files('server')]){
   const source=await readFile(path,'utf8');
   if(/\.m?js$/.test(path)){
     const result=spawnSync(process.execPath,['--check',path],{encoding:'utf8'});if(result.status!==0)throw Error(result.stderr);count++;

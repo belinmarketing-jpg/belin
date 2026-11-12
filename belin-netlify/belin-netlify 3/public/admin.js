@@ -66,13 +66,13 @@ function render() {
   $('#page-title').textContent = names[tab];
   const box = $('#content');
   if (tab === 'leads') {
-    box.innerHTML = `<div class="panel"><h2>Заявки (${state.leads.length})</h2><div class="items">${state.leads.map(l => `<article class="item"><div class="item-head"><h3>${esc(l.name)} <span class="badge">#${esc(l.id)}</span></h3><small>${esc(l.created_at)}</small></div><p>${esc(l.contact)} · ${esc(l.service)}</p><p>${esc(l.message)}</p><label>Статус <select data-lead="${Number(l.id)}">${[['new','Новая'],['in_progress','В работе'],['done','Завершена'],['spam','Спам']].map(([v,t])=>`<option value="${v}" ${l.status===v?'selected':''}>${t}</option>`).join('')}</select></label></article>`).join('') || '<p>Пока нет заявок.</p>'}</div></div>`;
+    box.innerHTML = `<div class="panel"><h2>Заявки (${state.leads.length})</h2><div class="items">${state.leads.map(l => `<article class="item"><div class="item-head"><h3>${esc(l.name)} ${l.is_test?'<span class="badge">ТЕСТ</span>':''} <span class="badge">#${esc(l.id)}</span></h3><small>${esc(l.created_at)}</small></div><p>${esc(l.contact)} · ${esc(l.service)}</p><p>${esc(l.message)}</p><label>Статус <select data-lead="${Number(l.id)}">${[['new','Новая'],['in_progress','В работе'],['done','Завершена'],['spam','Спам']].map(([v,t])=>`<option value="${v}" ${l.status===v?'selected':''}>${t}</option>`).join('')}</select></label></article>`).join('') || '<p>Пока нет заявок.</p>'}</div></div>`;
     box.querySelectorAll('[data-lead]').forEach(s => s.onchange = () => changeStatus(Number(s.dataset.lead), s.value));
     return;
   }
   if (tab === 'settings' || tab === 'privacy') {
     const s = state.settings;
-    const fields = tab === 'privacy' ? field('Текст политики','privacyText',s.privacyText,'textarea',true) : [
+    const fields = tab === 'privacy' ? [field('Текст политики','privacyText',s.privacyText,'textarea',true),field('Отдельное согласие','consentText',s.consentText,'textarea',true),field('Документы согласованы, все реквизиты заполнены','privacyApproved',s.privacyApproved==='true','checkbox')].join('') : [
       field('Название','brand',s.brand),field('Заголовок главной','heroTitle',s.heroTitle),
       field('Описание главной','heroDescription',s.heroDescription,'textarea',true),
       field('Email','email',s.email),field('Телефон','phone',s.phone),
@@ -103,6 +103,7 @@ async function uploadImage(file) {
 async function saveSettings(event) {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.target).entries());
+  if (tab === 'privacy') data.privacyApproved = event.target.elements.privacyApproved.checked ? 'true' : 'false';
   if (tab === 'settings') data.formsEnabled = event.target.elements.formsEnabled.checked ? 'true' : 'false';
   delete data.logoUpload;
   try {

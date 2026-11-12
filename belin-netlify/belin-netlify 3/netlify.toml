@@ -55,3 +55,8 @@
     X-Robots-Tag = "noindex, nofollow"
 
 
+
+[[redirects]]
+  from = "/consent"
+  to = "/consent.html"
+  status = 200

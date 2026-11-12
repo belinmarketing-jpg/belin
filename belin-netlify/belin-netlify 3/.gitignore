@@ -6,3 +6,10 @@ node_modules/
 !.env.example
 netlify/functions/*.zip
 netlify/functions/manifest.json
+__pycache__/
+*.pyc
+*.sqlite
+*.sqlite-*
+belin-private/
+server/config.json
+supabase/.temp/

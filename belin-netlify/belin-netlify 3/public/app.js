@@ -211,25 +211,6 @@
         `).join("");
       }
 
-      // Управление формой заявок
-      const form = $("#lead-form");
-
-      if (form) {
-        const enabled = settings.formsEnabled === "true";
-        const button = form.querySelector('button[type="submit"]');
-        const message = $("#form-message");
-
-        if (button) {
-          button.disabled = !enabled;
-          button.textContent = enabled ? "Отправить заявку ↗" : "Напишите нам по почте";
-        }
-
-        if (message) {
-          message.textContent =
-            enabled ? "" : "Онлайн-форма пока недоступна. Напишите на belin@belin.su — обсудим задачу.";
-        }
-      }
-
       observe();
 
     } catch (error) {
@@ -261,63 +242,6 @@
 
       observe();
     }
-  }
-
-  // Отправка заявок
-  const leadForm = $("#lead-form");
-
-  if (leadForm) {
-    leadForm.addEventListener("submit", async event => {
-      event.preventDefault();
-
-      const form = event.currentTarget;
-      const button = form.querySelector('button[type="submit"]');
-      const status = $("#form-message");
-
-      if (!button) return;
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      data.consent = Boolean(form.elements.consent?.checked);
-
-      button.disabled = true;
-
-      if (status) {
-        status.textContent = "Отправляем...";
-      }
-
-      try {
-        const response = await fetch("/api/leads", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || "Ошибка отправки");
-        }
-
-        if (status) {
-          status.textContent =
-            "Спасибо! Заявка получена. Мы свяжемся с вами.";
-        }
-
-        form.reset();
-
-      } catch (error) {
-        if (status) {
-          status.textContent = error.message;
-        }
-
-      } finally {
-        button.disabled = false;
-      }
-    });
   }
 
   // Первоначальное отображение
