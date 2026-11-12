@@ -78,7 +78,7 @@
 
       if (toggle) {
         toggle.setAttribute("aria-expanded", "false");
-        toggle.textContent = "${belinIcon('☰')}";
+        toggle.innerHTML = belinIcon('☰');
       }
     });
   }
@@ -95,15 +95,7 @@
   // Загрузка данных из Supabase через API
   async function load() {
     try {
-      const response = await fetch("/api/public", {
-        cache: "no-store"
-      });
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await window.BELIN_PUBLIC_DATA;
 
       const settings = data.settings || {};
       const projects = Array.isArray(data.projects)
@@ -222,18 +214,19 @@
       // Управление формой заявок
       const form = $("#lead-form");
 
-      if (form && settings.formsEnabled !== "true") {
+      if (form) {
+        const enabled = settings.formsEnabled === "true";
         const button = form.querySelector('button[type="submit"]');
         const message = $("#form-message");
 
         if (button) {
-          button.disabled = true;
-          button.textContent = "Форма временно недоступна";
+          button.disabled = !enabled;
+          button.textContent = enabled ? "Отправить заявку ↗" : "Напишите нам по почте";
         }
 
         if (message) {
           message.textContent =
-            "Перед запуском формы администратор должен опубликовать политику обработки данных и включить приём заявок.";
+            enabled ? "" : "Онлайн-форма пока недоступна. Напишите на belin@belin.su — обсудим задачу.";
         }
       }
 
