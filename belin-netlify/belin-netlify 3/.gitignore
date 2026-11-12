@@ -1,0 +1,8 @@
+node_modules/
+.build/
+.netlify/
+.env
+.env.*
+!.env.example
+netlify/functions/*.zip
+netlify/functions/manifest.json
