@@ -3,11 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 import {studioDocuments, submitStudioLead, publicLeadConfig} from './studio-leads.mjs';
 
-const json = (data, status = 200) => ({
+const json = (data, status = 200, cache = 'no-store') => ({
   statusCode: status,
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store',
+    'Cache-Control': cache,
   },
   body: JSON.stringify(data),
 });
@@ -158,7 +158,7 @@ export const handler = async (event) => {
         services,
         templates,
         leadConfig,
-      });
+      }, 200, 'public, max-age=0, s-maxage=60, stale-while-revalidate=300');
     }
 
     // Политика конфиденциальности

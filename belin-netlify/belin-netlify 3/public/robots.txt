@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+Allow: /api/public
 Disallow: /admin
 Disallow: /api/
+Disallow: /.netlify/
+
 Sitemap: https://belin.su/sitemap.xml
