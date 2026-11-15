@@ -88,3 +88,7 @@ body{background:#050912;color:var(--v2-white)}
   .empty-browser{width:min(280px,calc(100% - 24px));height:180px;padding:18px;transform:rotate(-4deg)}
   .empty-browser strong{font-size:clamp(20px,5vw,26px)}
 }
+@media(max-width:600px){
+  /* Keep Safari from zooming the page when a phone user focuses a field. */
+  .lead-form input:not([type=checkbox]),.lead-form select,.lead-form textarea{font-size:16px}
+}
