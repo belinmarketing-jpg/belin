@@ -1,6 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
+import {studioDocuments, submitStudioLead, publicLeadConfig} from './studio-leads.mjs';
 
 const json = (data, status = 200) => ({
   statusCode: status,
@@ -145,6 +146,10 @@ export const handler = async (event) => {
       );
 
       delete settings.privacyText;
+      delete settings.consentText;
+      // Netlify only receives synthetic fixtures; real Russian leads need a local backend.
+      const leadConfig = publicLeadConfig();
+      settings.formsEnabled = leadConfig.enabled ? 'true' : 'false';
 
       return json({
         settings,
@@ -152,135 +157,20 @@ export const handler = async (event) => {
         testimonials,
         services,
         templates,
+        leadConfig,
       });
     }
 
     // Политика конфиденциальности
 
-    if (method === 'GET' && path === 'privacy') {
-      const { data, error } = await db
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'privacyText')
-        .maybeSingle();
-
-      if (error) throw error;
-
-      return json({
-        privacyText: data?.value || '',
-      });
+    if (method === 'GET' && (path === 'privacy' || path === 'consent')) {
+      const documents = await studioDocuments(db);
+      return json({...documents, enabled:documents.testMode});
     }
 
-    // Приём заявок
-
     if (method === 'POST' && path === 'leads') {
-      const body = parse(event);
-
-      if (text(body.website)) {
-        return json({ ok: true });
-      }
-
-      if (!body.consent) {
-        return fail(
-          'Необходимо согласие на обработку данных.'
-        );
-      }
-
-      const { data: rows, error: settingsError } = await db
-        .from('site_settings')
-        .select('key,value')
-        .in('key', ['formsEnabled', 'privacyText']);
-
-      if (settingsError) throw settingsError;
-
-      const settings = Object.fromEntries(
-        (rows || []).map((item) => [
-          item.key,
-          item.value,
-        ])
-      );
-
-      if (
-        settings.formsEnabled !== 'true' ||
-        !settings.privacyText?.trim()
-      ) {
-        return fail(
-          'Приём заявок пока отключён.',
-          403
-        );
-      }
-
-      const name = text(body.name, 100);
-      const contact = text(body.contact, 150);
-      const service = text(body.service, 100);
-      const message = text(body.message, 2000);
-
-      if (
-        name.length < 2 ||
-        contact.length < 4 ||
-        String(body.name || '').length > 100 ||
-        String(body.contact || '').length > 150
-      ) {
-        return fail('Проверьте имя и контакты.');
-      }
-
-      const ip = (
-        event.headers['x-nf-client-connection-ip'] ||
-        event.headers['client-ip'] ||
-        'unknown'
-      ).split(',')[0];
-
-      const hash = createHash('sha256')
-        .update(
-          ip +
-          '|' +
-          (
-            process.env.LEAD_THROTTLE_SALT ||
-            process.env.SUPABASE_SERVICE_ROLE_KEY
-          )
-        )
-        .digest('hex');
-
-      const { data: previous, error: throttleError } =
-        await db
-          .from('lead_throttle')
-          .select('last_at')
-          .eq('ip_hash', hash)
-          .maybeSingle();
-
-      if (throttleError) throw throttleError;
-
-      if (
-        previous &&
-        Date.now() - Date.parse(previous.last_at) < 60000
-      ) {
-        return fail(
-          'Подождите минуту перед повторной отправкой.',
-          429
-        );
-      }
-
-      const { error } = await db.from('leads').insert({
-        name,
-        contact,
-        service,
-        message,
-      });
-
-      if (error) throw error;
-
-      const { error: updateError } = await db
-        .from('lead_throttle')
-        .upsert({
-          ip_hash: hash,
-          last_at: new Date().toISOString(),
-        });
-
-      if (updateError) {
-        console.error('Lead throttle update:', updateError);
-      }
-
-      return json({ ok: true }, 201);
+      if(process.env.BELIN_STUDIO_TEST_MODE!=='true')return fail('Приём заявок через этот сервер отключён.',403);
+      return submitStudioLead(event,db);
     }
 
     // Защита административных маршрутов
@@ -357,6 +247,8 @@ export const handler = async (event) => {
         'logoAlt',
         'formsEnabled',
         'privacyText',
+        'consentText',
+        'privacyApproved',
       ];
 
       const rows = Object.entries(body)
@@ -365,7 +257,7 @@ export const handler = async (event) => {
           key,
           value: text(
             value,
-            key === 'privacyText' ? 25000 : 3000
+            ['privacyText','consentText'].includes(key) ? 25000 : 3000
           ),
         }));
 

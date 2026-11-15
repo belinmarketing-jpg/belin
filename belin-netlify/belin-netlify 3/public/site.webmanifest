@@ -1,0 +1,1 @@
+{"name": "BELIN", "short_name": "BELIN", "start_url": "/", "display": "browser", "background_color": "#101010", "theme_color": "#0055ff", "icons": [{"src": "/assets/belin-icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/assets/belin-icon-512.png", "sizes": "512x512", "type": "image/png"}]}

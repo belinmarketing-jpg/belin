@@ -47,3 +47,8 @@ Node.js 20+. Установите зависимости `npm install`, созд
 - В GitHub загрузите **содержимое этой папки** в существующую `belin-netlify`, заменив изменённые файлы. В Netlify: base directory `belin-netlify`, publish directory `public`, functions directory `netlify/functions`, build command пустой.
 - Динамические заявки и админка требуют настройки Supabase и переменных окружения; не считайте их подключёнными до проверки на опубликованном сайте.
 - Цены из сложных текстовых ячеек требуют коммерческой сверки: неоднозначные позиции могли быть пропущены.
+
+
+## BELIN Clean platform release
+
+The RLS, recovery, publication and lead-inbox changes require a reviewed database migration and an isolated staging environment before production rollout. Follow [the release checklist](docs/platform-release.md). New platform endpoints are disabled unless `BELIN_PLATFORM_ENABLED=true`; opening this PR does not enable them.

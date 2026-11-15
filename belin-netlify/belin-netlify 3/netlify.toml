@@ -1,8 +1,35 @@
 [build]
+  # Compare the repository explicitly: the nested base path contains a space.
+  ignore = 'git diff --quiet "$CACHED_COMMIT_REF" "$COMMIT_REF"'
   publish = "public"
   functions = "netlify/functions"
+[build.environment]
+  NODE_VERSION = "22"
 [functions]
   node_bundler = "esbuild"
+# Customer routes are gated by BELIN_PLATFORM_ENABLED in the function.
+[[redirects]]
+  from = "/api/platform/*"
+  to = "/.netlify/functions/platform/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/s/:slug/privacy"
+  to = "/.netlify/functions/platform/privacy/:slug"
+  status = 200
+[[redirects]]
+  from = "/s/:slug"
+  to = "/.netlify/functions/platform/site/:slug"
+  status = 200
+[[headers]]
+  for = "/dashboard/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/login/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
@@ -26,3 +53,10 @@
   for = "/admin*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+
+
+[[redirects]]
+  from = "/consent"
+  to = "/consent.html"
+  status = 200

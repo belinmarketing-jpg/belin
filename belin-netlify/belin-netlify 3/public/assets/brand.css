@@ -1,0 +1,12 @@
+/* Shared BELIN identity: the supplied symbol is kept unchanged. */
+.belin-brand{display:inline-flex!important;align-items:center;gap:10px;text-decoration:none;line-height:1!important;flex-shrink:0;letter-spacing:normal!important}
+.belin-brand .belin-brand-symbol{display:block;width:32px!important;height:36px!important;max-width:none!important;max-height:none!important;object-fit:contain;flex:none}
+.belin-brand .belin-brand-name{font:750 23px/1 Arial,system-ui,sans-serif!important;letter-spacing:.035em!important;color:#fff!important}
+.brand-editor{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.brand-editor small{display:block;letter-spacing:.12em;font-size:10px}
+.site-shell-footer .belin-brand{align-self:flex-start}
+@media(max-width:820px){.belin-brand{gap:8px}.belin-brand .belin-brand-symbol{width:26px!important;height:30px!important}.belin-brand .belin-brand-name{font-size:20px!important}}
+@media(max-width:410px){.site-shell-header .belin-brand{gap:6px}.site-shell-header .belin-brand .belin-brand-name{font-size:18px!important}}
+.belin-brand .belin-brand-full{display:block;width:156px!important;height:56px!important;max-width:none!important;max-height:none!important;object-fit:contain;flex:none}
+@media(max-width:820px){.belin-brand .belin-brand-full{width:120px!important;height:43px!important}}
+@media(max-width:410px){.site-shell-header .belin-brand .belin-brand-full{width:108px!important;height:39px!important}}
