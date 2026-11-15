@@ -82,3 +82,9 @@ body{background:#050912;color:var(--v2-white)}
   .site-shell-header .shell-action{display:none}
   .site-shell-header .shell-hamburger{margin-left:auto}
 }
+@media(max-width:600px){
+  .projects-grid{grid-template-columns:minmax(0,1fr)}
+  .empty-project,.empty-visual{min-width:0}
+  .empty-browser{width:min(280px,calc(100% - 24px));height:180px;padding:18px;transform:rotate(-4deg)}
+  .empty-browser strong{font-size:clamp(20px,5vw,26px)}
+}
