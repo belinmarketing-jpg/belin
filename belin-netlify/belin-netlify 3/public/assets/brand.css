@@ -10,3 +10,14 @@
 .belin-brand .belin-brand-full{display:block;width:156px!important;height:56px!important;max-width:none!important;max-height:none!important;object-fit:contain;flex:none}
 @media(max-width:820px){.belin-brand .belin-brand-full{width:120px!important;height:43px!important}}
 @media(max-width:410px){.site-shell-header .belin-brand .belin-brand-full{width:108px!important;height:39px!important}}
+/* Compact wordmarks in the public navigation and footer. */
+.site-shell-header .belin-brand .belin-brand-full,
+.site-shell-footer .belin-brand .belin-brand-full{width:132px!important;height:47.4px!important}
+@media(max-width:820px){
+  .site-shell-header .belin-brand .belin-brand-full,
+  .site-shell-footer .belin-brand .belin-brand-full{width:108px!important;height:38.8px!important}
+}
+@media(max-width:410px){
+  .site-shell-header .belin-brand .belin-brand-full,
+  .site-shell-footer .belin-brand .belin-brand-full{width:96px!important;height:34.5px!important}
+}
