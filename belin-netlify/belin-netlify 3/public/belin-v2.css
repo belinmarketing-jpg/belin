@@ -1,6 +1,6 @@
 
 /* BELIN v2 — approved visual direction. No existing form/API logic replaced. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root{--v2-blue:#1885ff;--v2-white:#f5f8ff}
 body{background:#050912;color:var(--v2-white)}
 .site-shell-header{position:absolute!important;top:0;left:0;right:0;z-index:100!important;background:transparent!important}
