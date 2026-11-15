@@ -66,3 +66,19 @@ body{background:#050912;color:var(--v2-white)}
 
 /* Full chrome wordmark replaces the tall symbol on the services hero. */
 .v2-services .v2-logo3d{width:98%;height:60%;left:3%;top:22%}
+
+/* Phone layout: reserve space around the complete chrome wordmark. */
+@media(max-width:600px){
+  .ambient{left:0;width:100%;max-width:100vw}
+  .v2-home-hero .v2-logo3d,
+  .v2-show-hero .v2-logo3d{left:6%;width:88%;top:26%;height:53%;object-fit:contain}
+  .v2-visual .v2-glass-a{top:0;right:2%}
+  .v2-visual .v2-glass-b{bottom:0;left:2%}
+  .v2-visual .v2-object-c{bottom:4%;right:8%}
+  .v2-home-copy,.v2-show-copy{min-width:0}
+  .lead-form input,.lead-form select,.lead-form textarea{min-width:0}
+}
+@media(max-width:360px){
+  .site-shell-header .shell-action{display:none}
+  .site-shell-header .shell-hamburger{margin-left:auto}
+}
