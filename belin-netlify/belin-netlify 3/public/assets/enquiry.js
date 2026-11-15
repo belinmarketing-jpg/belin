@@ -12,6 +12,14 @@
     form.elements.service.append(option); form.elements.service.value = option.value;
     if (!form.elements.message.value) form.elements.message.value = 'Интересует ' + (template ? 'шаблон ' : 'услуга ') + choice + '.';
   }
+  document.querySelectorAll('a[data-enquiry]').forEach(link => {
+    link.addEventListener('click', () => {
+      const value = link.dataset.enquiry;
+      if ([...form.elements.service.options].some(option => option.value === value)) {
+        form.elements.service.value = value;
+      }
+    });
+  });
   const mail = document.getElementById('enquiry-email');
   if (mail) mail.href = 'mailto:belin@belin.su?subject=' + encodeURIComponent(choice ? 'BELIN — ' + choice : 'Обсудить проект с BELIN');
 })();

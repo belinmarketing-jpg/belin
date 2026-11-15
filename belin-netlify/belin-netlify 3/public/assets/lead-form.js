@@ -17,7 +17,7 @@
       });
       if (!response.ok) throw new Error('Не удалось отправить заявку. Попробуйте ещё раз или напишите на belin@belin.su.');
       form.reset();
-      status.textContent = 'Спасибо! Заявка получена. Мы свяжемся с вами.';
+      status.textContent = 'Заявка получена. Свяжемся с вами по указанному контакту, чтобы уточнить задачу и обсудить следующий шаг.';
     } catch (error) {
       status.textContent = error.message || 'Ошибка связи. Напишите на belin@belin.su.';
     } finally {
