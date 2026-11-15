@@ -1,0 +1,6 @@
+/* Shared light layout for legal documents and form confirmation. */
+:root{font-family:Arial,system-ui,sans-serif;color:#202733;background:#f7f9fc;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 80% 0%,#eaf0ff,transparent 55%),#f7f9fc;font-size:16px;line-height:1.65}
+.container{width:calc(100% - 48px);margin:40px auto 64px;padding:40px!important;background:#ffffffed;border:1px solid #e0e5ee;border-radius:20px;box-shadow:0 16px 60px #17294d08;overflow-wrap:anywhere}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.16;letter-spacing:-.035em;margin:40px 0 24px!important;max-width:100%}p{margin:18px 0;color:#556172}a{color:#0756ed;text-underline-offset:4px}a:hover{color:#003bb4}#policy{font-size:16px;line-height:1.85!important;color:#303947}#legal-status{font-size:13px;color:#657286}
+@media(max-width:600px){.container{width:calc(100% - 24px);margin:16px auto 32px;padding:24px 20px!important;border-radius:16px}h1{font-size:29px!important;margin-top:32px!important}#policy{font-size:15px;line-height:1.8!important}}
