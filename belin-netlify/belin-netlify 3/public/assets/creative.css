@@ -50,3 +50,9 @@ body:not(.creative){background:#fff;color:#1d2734}.show-hero,.v2-show-hero{backg
 @media(max-width:1100px){.cr-offer{padding:26px 22px}.cr-offer h3{font-size:25px}.cr-sales-process{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}}
 @media(max-width:820px){.cr-offer-grid{grid-template-columns:1fr}.cr-offer{padding:30px}.cr-offer h3{font-size:30px;min-height:0;margin:24px 0 18px}.cr-offer h3 br{display:none}.cr-offer-result{margin-top:0}.cr-offer-footer{align-items:flex-start;flex-direction:column;gap:4px}.cr-offer-footer .cr-text-link{min-height:44px}}
 @media(max-width:560px){.cr-offer{padding:26px 24px}.cr-offer h3{font-size:27px}.cr-sales-process{grid-template-columns:1fr;gap:0;padding:0;border-bottom:0}.cr-sales-process li{padding:26px 0;border-bottom:1px solid var(--cr-line)}.cr-sales-process h3{font-size:24px;margin:15px 0 12px}.cr-offer-footer p{margin-bottom:8px}}
+/* Keep all desktop navigation labels on one vertical axis. */
+.site-shell-header .shell-desktop{align-items:center;gap:24px}
+.site-shell-header .shell-desktop>a,.site-shell-header .orbit-services-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0;padding:10px 0;border:0;border-radius:0;background:transparent;font:600 13px/1.4 Inter,Arial,system-ui,sans-serif;white-space:nowrap;text-decoration:none}
+.site-shell-header .orbit-services-trigger{gap:6px}.site-shell-header .orbit-services-trigger>span{display:inline-flex;align-items:center;margin:0;font-size:13px;line-height:1}.site-shell-header .orbit-services-trigger svg{width:14px!important;height:14px!important;vertical-align:0!important}
+.site-shell-header .shell-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1.4}
+@media(max-width:1100px){.site-shell-header .shell-desktop{gap:18px}}
