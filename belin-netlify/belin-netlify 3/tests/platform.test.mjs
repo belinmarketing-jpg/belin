@@ -68,3 +68,9 @@ test('privacy renders escaped operator policy, method and body checks fail close
   assert.equal((await f.handler(f.event('site/clean-'+id,'POST'))).statusCode,405);
   const event=f.event('sites/clean-'+id+'/leads','POST');event.body='{';assert.equal((await f.handler(event)).statusCode,400);
 });
+
+test('the known demonstration site is noindex even when served by a function rewrite',async()=>{
+ const f=fixture(),demo='43ae3143-207f-47a3-8c33-f85584a19efd';f.site.id=demo;f.site.slug='clean-'+demo;f.site.status='published';f.site.published_content=content();
+ for(const path of ['site/clean-'+demo,'privacy/clean-'+demo]){const page=await f.handler(f.event(path));assert.equal(page.statusCode,200);assert.equal(page.headers['X-Robots-Tag'],'noindex, nofollow')}
+ const normal=fixture();normal.site.status='published';normal.site.published_content=content();assert.equal((await normal.handler(normal.event('site/clean-'+id))).headers['X-Robots-Tag'],undefined);
+});

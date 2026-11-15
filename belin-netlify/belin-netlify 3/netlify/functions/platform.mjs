@@ -7,7 +7,7 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const slugPattern=/^clean-[0-9a-f-]{36}$/;
 const json=(body,statusCode=200)=>({statusCode,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'},body:JSON.stringify(body)});
 const fail=(message,status=400)=>json({error:message},status);
-const html=body=>({statusCode:200,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'strict-origin-when-cross-origin','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https:; connect-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"},body});
+const html=(body,noindex=false)=>({statusCode:200,headers:{...(noindex?{'X-Robots-Tag':'noindex, nofollow'}:{}),'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'strict-origin-when-cross-origin','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https:; connect-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"},body});
 function readBody(event){
   if(!/^application\/json(?:;|$)/i.test(event.headers['content-type']||''))throw Error('Ожидается JSON');
   const raw=event.isBase64Encoded?Buffer.from(event.body||'','base64').toString('utf8'):event.body||'{}';
@@ -34,8 +34,9 @@ export function createPlatformHandler({client=createClient,env=process.env,logge
         const {data:site,error}=await db.from('customer_sites').select('id,slug,published_content').eq('slug',publicMatch[2]).eq('status','published').eq('publication_enabled',true).eq('template_key','belin-clean').maybeSingle();
         if(error)throw error;if(!site?.published_content)return fail('Сайт не найден',404);
         const content=validatePublication(site.published_content);
-        if(publicMatch[1]==='privacy')return html('<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Политика обработки данных</title><body><main style="max-width:850px;margin:40px auto;padding:20px;font:16px/1.7 sans-serif"><h1>Политика обработки персональных данных</h1><p>Оператор: '+escapeHTML(content.operatorName)+'</p><div style="white-space:pre-wrap">'+escapeHTML(content.privacyText)+'</div><p><a href="/s/'+site.slug+'">Вернуться на сайт</a></p></main></body></html>');
-        return html(renderClean(content,{slug:site.slug,policyVersion:hash(content.privacyText)}));
+        const noindex=site.id==='43ae3143-207f-47a3-8c33-f85584a19efd';
+        if(publicMatch[1]==='privacy')return html('<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Политика обработки данных</title><body><main style="max-width:850px;margin:40px auto;padding:20px;font:16px/1.7 sans-serif"><h1>Политика обработки персональных данных</h1><p>Оператор: '+escapeHTML(content.operatorName)+'</p><div style="white-space:pre-wrap">'+escapeHTML(content.privacyText)+'</div><p><a href="/s/'+site.slug+'">Вернуться на сайт</a></p></main></body></html>',noindex);
+        return html(renderClean(content,{slug:site.slug,policyVersion:hash(content.privacyText)}),noindex);
       }
       const publish=path.match(/^sites\/([^/]+)\/publish$/);
       if(publish){
