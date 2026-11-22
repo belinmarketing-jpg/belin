@@ -75,3 +75,20 @@ if (sort && grid) {
     grid.append(...cards);
   });
 }
+
+
+// Animate only when the visitor permits motion. Content is visible without JS.
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const reveal = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.animate(
+        [{ transform: 'translateY(12px)', opacity: .78 }, { transform: 'translateY(0)', opacity: 1 }],
+        { duration: 430, easing: 'cubic-bezier(.2,.75,.3,1)' }
+      );
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: .12 });
+  document.querySelectorAll('main h1, .hero-image, .section h2, .categories, .products, .product-page img, .cart-layout .panel')
+    .forEach(element => reveal.observe(element));
+}

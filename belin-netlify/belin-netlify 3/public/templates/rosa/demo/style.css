@@ -37,3 +37,103 @@
 .product-page img{border-radius:18px}
 @media(max-width:850px){.hero-image{min-height:350px}.hero h1{font-size:clamp(35px,7vw,68px)}.category-nav{gap:6px}.category-nav a{padding-inline:8px}}
 @media(max-width:620px){.hero{grid-template-columns:1fr;margin-top:12px;border-radius:16px}.hero-image{min-height:0;aspect-ratio:5/3}.hero-copy{padding:22px 18px}.hero .lede{margin-block:12px}.category-nav{min-height:44px}.section-head{margin-bottom:10px}.product{padding:7px;border-radius:12px}.product-image{border-radius:9px}.product-title h3{font-size:15px}.product .button{padding-inline:6px}.cart-row{grid-template-columns:48px minmax(0,1fr) auto;gap:7px}.cart-row img{width:48px}.quantity button{width:30px;height:34px}}
+
+
+/* Shared visual treatment for the storefront, product pages and checkout. */
+:root {
+  --paper: #fffaf5;
+  --ink: #352319;
+  --muted: #6b5144;
+  --glass: #fffaf5e8;
+  --soft-shadow: 0 14px 38px #6a3a2810;
+}
+body {
+  background: radial-gradient(ellipse at 100% 2%, #f5e4db 0%, transparent 38rem), var(--paper);
+}
+.category-bar {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  background: var(--glass);
+  border-color: #ad79632c;
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: 0 4px 20px #59321e08;
+}
+.category-nav a { border-radius: 99px; }
+.hero { box-shadow: var(--soft-shadow); }
+.hero-image span, .tag {
+  background: #fffaf5eb;
+  backdrop-filter: blur(12px);
+  border: 1px solid #ffffffa8;
+  border-radius: 99px;
+}
+.strip { background: #ffffff70; }
+main > .section > .eyebrow { margin-bottom: 11px; color: var(--berry); }
+main > .section > h1 { font-size: clamp(40px, 6.5vw, 83px); }
+.section-head h2 { margin-bottom: 12px; }
+.category, .product, .product-page img, .panel, .review-grid blockquote {
+  border-radius: 22px;
+}
+.category span {
+  bottom: 12px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  background: #fffaf5ed;
+  border: 1px solid #ffffff9c;
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+}
+.catalog-toolbar {
+  padding: 10px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff70;
+}
+.catalog-toolbar select { border-radius: 99px; }
+.products { gap: clamp(12px, 2vw, 24px); margin-top: 20px; }
+.product {
+  padding: 11px;
+  background: #fffaf4d9;
+  box-shadow: var(--soft-shadow);
+}
+.product-image { border-radius: 15px; }
+.product-title { gap: 5px; padding-top: 13px; }
+.product-title h3 { font-family: var(--serif); font-size: clamp(16px, 2vw, 24px); font-weight: 400; line-height: 1.2; }
+.product .button { border-radius: 99px; }
+.button { transition: background-color .2s, color .2s, box-shadow .2s, translate .2s; }
+.button.secondary:hover { color: #fff; background: var(--berry); }
+.product-page { align-items: start; }
+.product-page img { box-shadow: var(--soft-shadow); }
+.product-page h1 { font-size: clamp(38px, 5.6vw, 76px); }
+.panel {
+  border: 1px solid var(--line);
+  background: #f7e9e0d6;
+  box-shadow: var(--soft-shadow);
+  backdrop-filter: blur(12px);
+}
+.panel input, .panel select, .panel textarea { border-color: #c8a794; border-radius: 10px; }
+#cart-items {
+  padding: 4px 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff80;
+}
+.cart-row img, .quantity button { border-radius: 8px; }
+.cart-row:last-child { border-bottom: 0; }
+.sale, .foot { background: #f5e6db; }
+.review-grid blockquote { border: 1px solid var(--line); background: #fffaf5a8; }
+#notice:not(:empty) { border-radius: 12px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .product { transition: translate .25s, box-shadow .25s; }
+  .product:hover { translate: 0 -4px; box-shadow: 0 18px 40px #6a3a281b; }
+  .button:hover { translate: 0 -2px; box-shadow: 0 6px 17px #6a3a281a; }
+}
+@media (max-width: 620px) {
+  .category-nav { padding-bottom: 2px; }
+  .category, .product, .product-page img, .panel { border-radius: 15px; }
+  .category span { left: 8px; bottom: 8px; max-width: calc(100% - 16px); }
+  .product { padding: 7px; }
+  .product-image { border-radius: 10px; }
+  .catalog-toolbar { padding: 9px 12px; }
+  #cart-items { padding-inline: 10px; }
+}
