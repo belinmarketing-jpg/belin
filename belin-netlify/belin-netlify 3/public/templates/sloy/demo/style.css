@@ -33,3 +33,25 @@ h2{font-size:clamp(35px,5vw,72px);line-height:1.08;letter-spacing:-.055em}
 @media(min-width:791px) and (prefers-reduced-motion:no-preference){.hero-photo img{animation:hero-enter .72s ease-out both}}
 @keyframes hero-enter{from{opacity:.55;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:790px){.hero-inner{grid-template-columns:1fr;gap:18px;padding-block:28px 44px}.hero h1{font-size:clamp(43px,10vw,76px)}.hero-photo img{height:clamp(310px,85vw,560px)}.hero-photo::after{inset:7px -7px -7px 7px}.gallery{grid-template-columns:1fr}.gallery button:nth-child(n){margin-top:0}.gallery img{height:clamp(230px,64vw,460px)}}
+
+/* Keep frame proportions stable while photographs crop to fit. */
+.hero-inner{grid-template-columns:minmax(0,1.06fr) minmax(0,1fr);gap:clamp(16px,3vw,50px)}
+.hero h1{font-size:clamp(38px,5.3vw,88px)}
+.hero-photo img{height:auto;aspect-ratio:4/5;object-position:55% center}
+.products{grid-template-columns:repeat(5,minmax(0,1fr))}
+.products img{height:auto;aspect-ratio:4/5}
+.about img{height:auto;aspect-ratio:4/3}
+.gallery{grid-template-columns:minmax(0,1.35fr) repeat(2,minmax(0,.9fr))}
+.gallery img{height:auto;aspect-ratio:1/1}
+.gallery button:not(:first-child) img{aspect-ratio:4/5}
+#photo img{height:auto;max-height:84dvh;object-fit:contain}
+input,select,textarea{min-width:0;max-width:100%}
+@media(max-width:790px){
+ .hero-inner{grid-template-columns:minmax(0,1fr)}
+ .hero h1{font-size:clamp(33px,9vw,65px)}
+ .hero-photo img{aspect-ratio:5/4}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gallery{grid-template-columns:minmax(0,1fr)}
+ .gallery img,.gallery button:not(:first-child) img{aspect-ratio:4/3}
+}
+@media(max-width:380px){.top .pill{padding-inline:14px}.top nav{font-size:.875rem}.products span{left:9px;bottom:9px;font-size:.9rem;overflow-wrap:anywhere}}
