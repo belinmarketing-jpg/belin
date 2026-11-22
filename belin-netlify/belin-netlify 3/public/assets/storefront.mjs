@@ -8,6 +8,11 @@ export const featuredTemplates = [{
   description: 'Шаблон сайта мебельной мастерской с каталогом услуг, портфолио, квизом по размерам и формой записи на замер.',
   price: 'По запросу', image: '/templates/sloy/demo/media/hero.webp',
   demo_url: '/templates/sloy/demo/', details_url: '/templates/sloy/demo/', preview_base: '/assets/sloy-preview-', published: true
+}, {
+  id: 'belin-rosa', title: 'РОСА', category: 'Цветы и подарки',
+  description: 'Интернет-магазин цветов с каталогом по категориям, карточками букетов, акциями и корзиной. В оформлении можно выбрать доставку или самовывоз и добавить открытку.',
+  price: 'По запросу', image: '/assets/rosa-preview-desktop.webp',
+  demo_url: '/templates/rosa/demo/', details_url: '/templates/rosa/demo/', preview_base: '/assets/rosa-preview-', published: true
 }];
 
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
