@@ -23,7 +23,7 @@ function renderTemplates(){
   const demoURL=safeURL(x.demo_url),imageURL=safeURL(x.image),detailsURL=safeURL(x.details_url);
   const demo=demoURL?`<a href="${esc(demoURL)}" target="_blank" rel="noopener noreferrer">Живое демо ↗</a>`:'';
   const img=imageURL?`<img src="${esc(imageURL)}" alt="Превью: ${esc(x.title)}" loading="lazy">`:'<span aria-hidden="true">▧</span>';
-  return `<article class="template-card"><div class="template-preview">${img}</div><div class="template-body"><small>${esc(x.category||'Готовый сайт')}</small><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="template-price">${esc(x.price||'Стоимость после обсуждения')}</div><div class="template-actions">${detailsURL?`<a href="${esc(detailsURL)}">Подробнее</a>`:''}${demo}<a class="buy" href="${esc(enquiryURL('template',x.title))}">Обсудить шаблон ↗</a></div></div></article>`;
+  return `<article class="template-card"><div class="template-preview">${detailsURL==='/templates/clean/'?`<a href="${esc(detailsURL)}" aria-label="Открыть шаблон BELIN Clean">${img}</a>`:img}</div><div class="template-body"><small>${esc(x.category||'Готовый сайт')}</small><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="template-price">${esc(x.price||'Стоимость после обсуждения')}</div><div class="template-actions">${detailsURL?`<a href="${esc(detailsURL)}">Подробнее</a>`:''}${demo}<a class="buy" href="${esc(enquiryURL('template',x.title))}">Обсудить шаблон ↗</a></div></div></article>`;
  }).join('')||'<div class="empty-templates"><h3>Шаблоны не найдены</h3><p>Попробуйте другую нишу или очистите поиск.</p><button type="button" id="template-clear" class="show-btn">Сбросить поиск</button></div>';
 }
 

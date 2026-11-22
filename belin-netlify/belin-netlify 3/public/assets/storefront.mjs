@@ -1,7 +1,7 @@
 export const featuredTemplates = [{
   id: 'belin-clean', title: 'BELIN Clean', category: 'Клининг',
   description: 'Сайт клининговой компании: услуги, калькулятор стоимости, форма заявки и редактор. Домен и хостинг на первый год включены. Сопровождение и дальнейший хостинг — 329 ₽/мес с запуска сайта; адаптация и настройка — +5 000 ₽. Продление домена оплачивается отдельно.',
-  price: '7 000 ₽', image: '/assets/clean-storefront.svg',
+  price: '7 000 ₽', image: '/assets/clean-preview-desktop.webp',
   demo_url: '/templates/clean/demo/', details_url: '/templates/clean/', published: true
 }];
 
@@ -23,7 +23,7 @@ export function mergeTemplates(rows = []) {
     if (row.published === false) continue;
     const index = result.findIndex(item => String(item.title).trim().toLowerCase() === String(row.title).trim().toLowerCase());
     if (index < 0) result.push(row);
-    else result[index] = {...result[index], ...row, details_url: result[index].details_url};
+    else result[index] = {...result[index], ...row, details_url: result[index].details_url, image: result[index].image};
   }
   return result;
 }
